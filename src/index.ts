@@ -5,6 +5,8 @@ import { Status, getStatusColor } from './tasks/task4';
 import { capitalizeFirst, trimAndTransform } from './tasks/task5';
 import { getFirstElement } from './tasks/task6';
 import { HasId, findById } from './tasks/task7';
+import { csvToJSON } from './tasks/task8';
+import { formatCSVFileToJSONFile } from './tasks/task9';
 
 // Демонстрация задания 1
 console.log('=== Задание 1: User ===');
@@ -70,3 +72,27 @@ const users: UserWithId[] = [
 ];
 console.log('Пользователь с id=2:', findById(users, 2));
 console.log('Пользователь с id=5:', findById(users, 5));
+
+// Демонстрация задания 8
+console.log('\n=== Задание 8: csvToJSON ===');
+const csvData = [
+  "p1;p2;p3;p4",
+  "1;A;b;c",
+  "2;B;v;d"
+];
+try {
+  const jsonResult = csvToJSON(csvData, ';');
+  console.log('Результат преобразования CSV в JSON:');
+  console.log(JSON.stringify(jsonResult, null, 2));
+} catch (error) {
+  console.error('Ошибка:', error.message);
+}
+
+// Демонстрация задания 9 (асинхронная, но для примера показываем как работает)
+console.log('\n=== Задание 9: formatCSVFileToJSONFile ===');
+console.log('Функция для работы с файлами определена.');
+console.log('Пример использования (раскомментируйте для реального запуска):');
+console.log(`
+// await formatCSVFileToJSONFile('./data/input.csv', './data/output.json', ';');
+// console.log('Файл успешно преобразован!');
+`);
