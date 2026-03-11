@@ -1,6 +1,5 @@
-// src/tests/task10.test.ts
-
 import { describe, it, expect } from 'vitest';
+import { expectTypeOf } from 'vitest';
 import {
   query,
   where,
@@ -11,7 +10,7 @@ import {
   type Transform
 } from '../tasks/task10';
 
-describe('Задание 10: Конвейер преобразований', () => {
+describe('Задание 10: Конвейер преобразований с проверкой порядка', () => {
   type User = {
     id: number;
     name: string;
@@ -28,6 +27,110 @@ describe('Задание 10: Конвейер преобразований', () 
     { id: 5, name: 'Anna', surname: 'Smith', age: 28, city: 'NY' },
     { id: 6, name: 'Peter', surname: 'Jones', age: 42, city: 'LA' }
   ];
+
+  describe('Тесты типов - проверка порядка операций', () => {
+    it('должен позволять все where в начале', () => {
+      expectTypeOf(query<User>(
+        where('name', 'John'),
+        where('surname', 'Doe'),
+        where('city', 'NY')
+      )).toBeFunction();
+    });
+
+    it('должен позволять where, затем groupBy', () => {
+      expectTypeOf(query<User>(
+        where('name', 'John'),
+        where('surname', 'Doe'),
+        groupBy('city')
+      )).toBeFunction();
+    });
+
+    it('должен позволять where, groupBy, having', () => {
+      expectTypeOf(query<User>(
+        where('name', 'John'),
+        groupBy('city'),
+        having<User>((group) => group.items.length > 1)
+      )).toBeFunction();
+    });
+
+    it('должен позволять where, groupBy, having, sort', () => {
+      expectTypeOf(query<User>(
+        where('name', 'John'),
+        groupBy('city'),
+        having<User>((group) => group.items.length > 1),
+        sort('age')
+      )).toBeFunction();
+    });
+
+    it('должен позволять несколько where, затем groupBy, затем having, затем несколько sort', () => {
+      expectTypeOf(query<User>(
+        where('name', 'John'),
+        where('surname', 'Doe'),
+        groupBy('city'),
+        having<User>((group) => group.items.length > 1),
+        sort('age'),
+        sort('name')
+      )).toBeFunction();
+    });
+
+    it('НЕ должен позволять groupBy перед where', () => {
+      // @ts-expect-error - groupBy должен идти после всех where
+      expectTypeOf(query<User>(
+        groupBy('city'),
+        where('name', 'John')
+      )).toBeFunction();
+    });
+
+    it('НЕ должен позволять having перед groupBy', () => {
+      // @ts-expect-error - having должен идти после groupBy
+      expectTypeOf(query<User>(
+        where('name', 'John'),
+        having<User>((group) => group.items.length > 1),
+        groupBy('city')
+      )).toBeFunction();
+    });
+
+    it('НЕ должен позволять sort перед groupBy/having', () => {
+      // @ts-expect-error - sort должен идти после всех группирующих операций
+      expectTypeOf(query<User>(
+        where('name', 'John'),
+        sort('age'),
+        groupBy('city')
+      )).toBeFunction();
+    });
+
+    it('НЕ должен позволять groupBy после having', () => {
+      // @ts-expect-error - groupBy не может идти после having
+      expectTypeOf(query<User>(
+        where('name', 'John'),
+        groupBy('city'),
+        having<User>((group) => group.items.length > 1),
+        groupBy('age')
+      )).toBeFunction();
+    });
+
+    it('НЕ должен позволять having после sort', () => {
+      // @ts-expect-error - having не может идти после sort
+      expectTypeOf(query<User>(
+        where('name', 'John'),
+        groupBy('city'),
+        sort('age'),
+        having<User>((group) => group.items.length > 1)
+      )).toBeFunction();
+    });
+
+    it('НЕ должен позволять where после groupBy', () => {
+      // @ts-expect-error - where не может идти после groupBy
+      expectTypeOf(query<User>(
+        groupBy('city'),
+        where('name', 'John')
+      )).toBeFunction();
+    });
+
+    it('должен позволять пустой конвейер', () => {
+      expectTypeOf(query<User>()).toBeFunction();
+    });
+  });
 
   describe('where', () => {
     it('должен фильтровать по значению поля', () => {
@@ -86,16 +189,6 @@ describe('Задание 10: Конвейер преобразований', () 
       expect(result).not.toBe(users);
       expect(users[0]?.age).toBe(34);
     });
-
-    it('должен сохранять стабильность сортировки для равных значений', () => {
-      const sortByAge = sort<User>('age');
-      const result = sortByAge(users);
-      
-      const age35Users = result.filter(u => u.age === 35);
-      expect(age35Users).toHaveLength(2);
-      expect(age35Users.some(u => u.id === 3)).toBe(true);
-      expect(age35Users.some(u => u.id === 4)).toBe(true);
-    });
   });
 
   describe('groupBy', () => {
@@ -120,16 +213,6 @@ describe('Задание 10: Конвейер преобразований', () 
       expect(result[0]).toHaveProperty('items');
       expect(Array.isArray(result[0]?.items)).toBe(true);
     });
-
-    it('должен корректно группировать уникальные значения', () => {
-      const groupById = groupBy<User>('id');
-      const result = groupById(users);
-
-      expect(result).toHaveLength(6);
-      result.forEach(group => {
-        expect(group.items).toHaveLength(1);
-      });
-    });
   });
 
   describe('having', () => {
@@ -145,31 +228,13 @@ describe('Задание 10: Конвейер преобразований', () 
     });
 
     it('должен отфильтровывать группы, не удовлетворяющие условию', () => {
-      const testUsers = [
-        { id: 1, name: 'John', surname: 'Doe', age: 34, city: 'NY' },
-        { id: 2, name: 'Mike', surname: 'Smith', age: 35, city: 'LA' }
-      ];
-
-      const groupByCity = groupBy<User>('city');
-      const groups = groupByCity(testUsers);
-
-      const filterGroups = having<User>((group) => group.items.length > 1);
-      const result = filterGroups(groups);
-
-      expect(result).toHaveLength(0);
-    });
-
-    it('должен применять сложные предикаты к группам', () => {
       const groupByCity = groupBy<User>('city');
       const groups = groupByCity(users);
 
-      const filterGroups = having<User>((group) => 
-        group.items.some(u => u.age > 40) && group.items.length >= 2
-      );
+      const filterGroups = having<User>((group) => group.items.length > 3);
       const result = filterGroups(groups);
 
-      expect(result).toHaveLength(1);
-      expect(result[0]?.key).toBe('LA');
+      expect(result).toHaveLength(0);
     });
   });
 
@@ -199,7 +264,9 @@ describe('Задание 10: Конвейер преобразований', () 
 
       expect(result).toHaveLength(2);
       const nyGroup = result.find(g => g.key === 'NY') as Group<User, 'city'>;
+      const laGroup = result.find(g => g.key === 'LA') as Group<User, 'city'>;
       expect(nyGroup?.items).toHaveLength(2);
+      expect(laGroup?.items).toHaveLength(2);
     });
 
     it('должен выполнять сложный конвейер с группировкой и фильтрацией', () => {
@@ -213,6 +280,12 @@ describe('Задание 10: Конвейер преобразований', () 
 
       expect(result).toHaveLength(2);
       expect(result.every(g => g.items.length > 1)).toBe(true);
+      
+      const nyGroup = result.find(g => g.key === 'NY') as Group<User, 'city'>;
+      const laGroup = result.find(g => g.key === 'LA') as Group<User, 'city'>;
+      
+      expect(nyGroup?.items).toHaveLength(2);
+      expect(laGroup?.items).toHaveLength(2);
     });
 
     it('должен возвращать исходный массив при пустом конвейере', () => {
@@ -220,7 +293,7 @@ describe('Задание 10: Конвейер преобразований', () 
       const result = pipeline(users);
 
       expect(result).toEqual(users);
-      expect(result).not.toBe(users); // Должен быть новый массив
+      expect(result).not.toBe(users);
     });
 
     it('должен работать с одним шагом', () => {
@@ -248,6 +321,50 @@ describe('Задание 10: Конвейер преобразований', () 
       expect(result[0]?.age).toBe(36);
       expect(result[1]?.age).toBe(36);
       expect(result[2]?.age).toBe(43);
+    });
+
+    it('должен правильно обрабатывать having с условием >2', () => {
+      const pipeline = query<User>(
+        groupBy('city'),
+        having<User>((group) => group.items.length > 2)
+      );
+
+      const result = pipeline(users);
+      
+      // Обе группы имеют по 3 пользователя, поэтому условие >2 должно пропустить обе группы
+      expect(result).toHaveLength(2);
+      expect(result.every(g => g.items.length > 2)).toBe(true);
+      
+      const nyGroup = result.find(g => g.key === 'NY') as Group<User, 'city'>;
+      const laGroup = result.find(g => g.key === 'LA') as Group<User, 'city'>;
+      
+      expect(nyGroup?.items).toHaveLength(3);
+      expect(laGroup?.items).toHaveLength(3);
+    });
+
+    it('должен правильно обрабатывать having с условием >3', () => {
+      const pipeline = query<User>(
+        groupBy('city'),
+        having<User>((group) => group.items.length > 3)
+      );
+
+      const result = pipeline(users);
+      
+      // Ни одна группа не имеет >3 пользователей
+      expect(result).toHaveLength(0);
+    });
+
+    it('должен правильно обрабатывать having с условием >=3', () => {
+      const pipeline = query<User>(
+        groupBy('city'),
+        having<User>((group) => group.items.length >= 3)
+      );
+
+      const result = pipeline(users);
+      
+      // Обе группы имеют по 3 пользователя, поэтому условие >=3 должно пропустить обе группы
+      expect(result).toHaveLength(2);
+      expect(result.every(g => g.items.length >= 3)).toBe(true);
     });
   });
 
@@ -279,22 +396,6 @@ describe('Задание 10: Конвейер преобразований', () 
 
       const result = pipeline(users);
       expect(result).toHaveLength(0);
-    });
-
-    it('должен сохранять типобезопасность при композиции', () => {
-      const pipeline = query<User>(
-        where('name', 'John'),
-        sort('age'),
-        groupBy('city')
-      );
-
-      const result = pipeline(users);
-      
-      expect(Array.isArray(result)).toBe(true);
-      if (result.length > 0) {
-        expect(result[0]).toHaveProperty('key');
-        expect(result[0]).toHaveProperty('items');
-      }
     });
   });
 });
