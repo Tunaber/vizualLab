@@ -7,6 +7,11 @@ import { getFirstElement } from './tasks/task6';
 import { HasId, findById } from './tasks/task7';
 import { csvToJSON } from './tasks/task8';
 import { formatCSVFileToJSONFile } from './tasks/task9';
+import { 
+  query, where, sort, groupBy, having,
+  type Transform, type Where, type Sort, 
+  type Group, type GroupBy, type GroupTransform, type Having
+} from './tasks/task10';
 
 // Демонстрация задания 1
 console.log('=== Задание 1: User ===');
@@ -88,7 +93,7 @@ try {
   console.error('Ошибка:', error.message);
 }
 
-// Демонстрация задания 9 (асинхронная, но для примера показываем как работает)
+// Демонстрация задания 9
 console.log('\n=== Задание 9: formatCSVFileToJSONFile ===');
 console.log('Функция для работы с файлами определена.');
 console.log('Пример использования (раскомментируйте для реального запуска):');
@@ -96,3 +101,110 @@ console.log(`
 // await formatCSVFileToJSONFile('./data/input.csv', './data/output.json', ';');
 // console.log('Файл успешно преобразован!');
 `);
+
+// Демонстрация задания 10
+console.log('\n=== Задание 10: Конвейер преобразований ===');
+
+type User = {
+  id: number;
+  name: string;
+  surname: string;
+  age: number;
+  city: string;
+};
+
+const demoUsers: User[] = [
+  { id: 1, name: 'John', surname: 'Doe', age: 34, city: 'NY' },
+  { id: 2, name: 'John', surname: 'Doe', age: 33, city: 'NY' },
+  { id: 3, name: 'John', surname: 'Doe', age: 35, city: 'LA' },
+  { id: 4, name: 'Mike', surname: 'Doe', age: 35, city: 'LA' },
+  { id: 5, name: 'Anna', surname: 'Smith', age: 28, city: 'NY' },
+  { id: 6, name: 'Peter', surname: 'Jones', age: 42, city: 'LA' }
+];
+
+console.log('\nИсходные данные:', JSON.stringify(demoUsers, null, 2));
+
+// Пример 1: Фильтрация и сортировка
+console.log('\n--- Пример 1: Фильтрация и сортировка ---');
+console.log('Поиск пользователей с именем John и фамилией Doe, сортировка по возрасту:');
+
+const filterAndSort = query<User>(
+  where('name', 'John'),
+  where('surname', 'Doe'),
+  sort('age')
+);
+
+const result1 = filterAndSort(demoUsers);
+console.log('Результат:', JSON.stringify(result1, null, 2));
+
+// Пример 2: Группировка
+console.log('\n--- Пример 2: Группировка по городу ---');
+console.log('Группировка всех пользователей по городу:');
+
+const groupByCity = query<User>(
+  groupBy('city')
+);
+
+const result2 = groupByCity(demoUsers);
+console.log('Результат:', JSON.stringify(result2, null, 2));
+
+// Пример 3: Группировка и фильтрация групп
+console.log('\n--- Пример 3: Группировка и фильтрация групп ---');
+console.log('Группировка по городу, оставляем только города с количеством пользователей больше 1:');
+
+const groupAndFilter = query<User>(
+  groupBy('city'),
+  having<User>((group) => group.items.length > 1)
+);
+
+const result3 = groupAndFilter(demoUsers);
+console.log('Результат:', JSON.stringify(result3, null, 2));
+
+// Пример 4: Сложный конвейер
+console.log('\n--- Пример 4: Сложный конвейер ---');
+console.log('Пользователи с фамилией Doe, сгруппированные по городу, оставляем только группы где есть кто-то старше 34 лет:');
+
+const complexPipeline = query<User>(
+  where('surname', 'Doe'),
+  groupBy('city'),
+  having<User>((group) => group.items.some(u => u.age > 34))
+);
+
+const result4 = complexPipeline(demoUsers);
+console.log('Результат:', JSON.stringify(result4, null, 2));
+
+// Пример 5: Комбинирование разных типов преобразований
+console.log('\n--- Пример 5: Комбинирование разных типов преобразований ---');
+console.log('Все пользователи, сгруппированные по городу, затем сортировка групп по количеству элементов:');
+
+// Сначала группируем, потом сортируем группы по размеру
+const groupThenSort = query<User>(
+  groupBy('city'),
+  (groups: Group<User, 'city'>[]) => [...groups].sort((a, b) => b.items.length - a.items.length)
+);
+
+const result5 = groupThenSort(demoUsers);
+console.log('Результат (группы отсортированы по убыванию количества):', JSON.stringify(result5, null, 2));
+
+// Пример 6: Многоступенчатая фильтрация
+console.log('\n--- Пример 6: Многоступенчатая фильтрация ---');
+console.log('Пользователи из NY или LA, старше 30 лет, отсортированные по имени:');
+
+const multiFilter = query<User>(
+  (data: User[]) => data.filter(u => u.city === 'NY' || u.city === 'LA'),
+  (data: User[]) => data.filter(u => u.age > 30),
+  sort('name')
+);
+
+const result6 = multiFilter(demoUsers);
+console.log('Результат:', JSON.stringify(result6, null, 2));
+
+// Пример 7: Работа с пустым конвейером
+console.log('\n--- Пример 7: Пустой конвейер ---');
+console.log('Конвейер без шагов возвращает исходные данные:');
+
+const emptyPipeline = query<User>();
+const result7 = emptyPipeline(demoUsers);
+console.log('Результат (должен совпадать с исходными данными):', JSON.stringify(result7, null, 2));
+
+console.log('\n=== Задание 10 успешно продемонстрировано ===');
