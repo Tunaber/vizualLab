@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { csvToJSON } from '../tasks/task8';
+import { csvToJSON } from '../tasks/task8.js';
 
 describe('Задание 8: csvToJSON', () => {
     describe('Корректные входные данные', () => {
