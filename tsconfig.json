@@ -1,0 +1,35 @@
+{
+  "compilerOptions": {
+    // File Layout
+    "rootDir": "./src",
+    "outDir": "./dist",
+
+    // Environment Settings - изменено для ESM
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "target": "ES2020",
+    "lib": ["ES2020"],
+    "types": ["node", "vitest"],
+
+    // Other Outputs
+    "sourceMap": true,
+    "declaration": true,
+    "declarationMap": true,
+
+    // Stricter Typechecking Options
+    "noUncheckedIndexedAccess": true,
+    "exactOptionalPropertyTypes": true,
+
+    // Recommended Options
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noUncheckedSideEffectImports": true,
+    "moduleDetection": "force"
+  },
+  "include": ["src"],
+  "exclude": ["node_modules", "dist"]
+}
