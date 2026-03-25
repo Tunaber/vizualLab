@@ -6,6 +6,7 @@
     "test": "vitest",
     "test:watch": "vitest --watch",
     "test:coverage": "vitest run --coverage",
+    "test:ci": "vitest run --coverage --reporter=default --no-watch",
     "test:ui": "vitest --ui",
     "dev": "tsx index.ts",
     "build": "tsc"
