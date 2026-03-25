@@ -9,7 +9,7 @@ import {
   having,
   type Group,
   type Transform
-} from '../tasks/task10';
+} from '../tasks/task10.js';
 
 describe('Задание 10: Конвейер преобразований', () => {
   type User = {

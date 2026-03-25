@@ -1,12 +1,13 @@
 {
   "name": "typescript-test-master",
   "version": "1.0.0",
+  "type": "module",
   "main": "index.js",
   "scripts": {
     "test": "vitest",
     "test:watch": "vitest --watch",
     "test:coverage": "vitest run --coverage",
-    "test:ci": "vitest run --coverage --reporter=default --no-watch",
+    "test:ci": "vitest run --coverage",
     "test:ui": "vitest --ui",
     "dev": "tsx index.ts",
     "build": "tsc"
