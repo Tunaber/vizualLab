@@ -1,11 +1,11 @@
 import { describe, it, expect } from 'vitest';
-import { createUser, User } from '../tasks/task1';
-import { createBook, Book, Genre } from '../tasks/task2';
-import { calculateArea } from '../tasks/task3';
-import { getStatusColor, Status } from '../tasks/task4';
-import { capitalizeFirst, trimAndTransform } from '../tasks/task5';
-import { getFirstElement } from '../tasks/task6';
-import { findById, HasId } from '../tasks/task7';
+import { createUser, User } from '../tasks/task1.js';
+import { createBook, Book, Genre } from '../tasks/task2.js';
+import { calculateArea } from '../tasks/task3.js';
+import { getStatusColor, Status } from '../tasks/task4.js';
+import { capitalizeFirst, trimAndTransform } from '../tasks/task5.js';
+import { getFirstElement } from '../tasks/task6.js';
+import { findById, HasId } from '../tasks/task7.js';
 
 describe('Задание 1: User', () => {
   it('должен создавать пользователя со всеми полями', () => {

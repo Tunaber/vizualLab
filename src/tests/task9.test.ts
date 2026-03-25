@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { formatCSVFileToJSONFile } from '../tasks/task9';
-import * as task8 from '../tasks/task8';
+import { formatCSVFileToJSONFile } from '../tasks/task9.js';
+import * as task8 from '../tasks/task8.js';
 
 // Мокаем модули
 vi.mock('node:fs/promises', () => ({
