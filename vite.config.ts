@@ -1,20 +1,17 @@
-import { defineConfig } from 'vitest/config';
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
 
 export default defineConfig({
-  test: {
-    environment: 'node',
-    include: ['src/**/*.test.ts', 'src/**/*.spec.ts'],
-    globals: false,
-    coverage: {
-      provider: 'v8',
-      reporter: ['text', 'lcov', 'html'],
-      reportsDirectory: 'coverage',
-      exclude: [
-        'node_modules/',
-        'dist/',
-        '**/*.test.ts',
-        '**/*.spec.ts',
-      ],
-    },
-  },
+  plugins: [react()],
+  server: {
+    port: 3000,
+    open: true,
+    proxy: {
+      '/books': {
+        target: 'https://fakeapi.extendsclass.com',
+        changeOrigin: true,
+        secure: false,
+      }
+    }
+  }
 });

@@ -139,3 +139,9 @@ dist
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 .vite/
+# React build
+dist/
+coverage/
+
+# Keep existing ignores
+node_modules/
