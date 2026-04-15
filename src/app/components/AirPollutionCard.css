@@ -1,0 +1,87 @@
+.air-pollution-card {
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  padding: 24px;
+  color: white;
+}
+
+.air-pollution-card__header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.air-pollution-card__icon {
+  width: 24px;
+  height: 24px;
+}
+
+.air-pollution-card__header h3 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.air-pollution-card__aqi {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  border-radius: 12px;
+  margin-bottom: 12px;
+}
+
+.air-pollution-card__aqi-value {
+  font-size: 36px;
+  font-weight: 700;
+}
+
+.air-pollution-card__aqi-label {
+  font-size: 18px;
+  font-weight: 500;
+}
+
+.air-pollution-card__description {
+  margin: 0 0 20px;
+  font-size: 14px;
+  opacity: 0.9;
+}
+
+.air-pollution-card__pollutants {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.air-pollution-card__pollutant {
+  display: grid;
+  grid-template-columns: 50px 1fr 80px;
+  align-items: center;
+  gap: 12px;
+}
+
+.air-pollution-card__pollutant-name {
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.air-pollution-card__pollutant-bar {
+  height: 8px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.air-pollution-card__pollutant-fill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.5s ease;
+}
+
+.air-pollution-card__pollutant-value {
+  font-size: 12px;
+  text-align: right;
+  opacity: 0.9;
+}

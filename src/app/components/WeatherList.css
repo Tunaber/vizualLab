@@ -1,0 +1,143 @@
+.weather-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.weather-day-card {
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(10px);
+  border-radius: 16px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.weather-day-card--expanded {
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.weather-day-card__header {
+  display: flex;
+  align-items: center;
+  padding: 16px 20px;
+  cursor: pointer;
+  color: white;
+  gap: 16px;
+}
+
+.weather-day-card__header:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.weather-day-card__info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.weather-day-card__date {
+  font-weight: 600;
+  font-size: 16px;
+  text-transform: capitalize;
+}
+
+.weather-day-card__description {
+  font-size: 14px;
+  opacity: 0.8;
+  text-transform: capitalize;
+}
+
+.weather-day-card__icon {
+  width: 48px;
+  height: 48px;
+}
+
+.weather-day-card__temps {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.weather-day-card__temp-max {
+  font-weight: 700;
+  font-size: 18px;
+}
+
+.weather-day-card__temp-min {
+  font-size: 14px;
+  opacity: 0.7;
+}
+
+.weather-day-card__avg {
+  font-size: 24px;
+  font-weight: 700;
+  min-width: 50px;
+  text-align: center;
+}
+
+.weather-day-card__arrow {
+  width: 24px;
+  height: 24px;
+  transition: transform 0.3s ease;
+}
+
+.weather-day-card__arrow--up {
+  transform: rotate(180deg);
+}
+
+.weather-day-card__hours {
+  display: flex;
+  overflow-x: auto;
+  padding: 16px;
+  gap: 8px;
+  background: rgba(0, 0, 0, 0.1);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.weather-hour-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  min-width: 80px;
+  color: white;
+}
+
+.weather-hour-card__time {
+  font-size: 12px;
+  opacity: 0.8;
+}
+
+.weather-hour-card__icon {
+  width: 36px;
+  height: 36px;
+}
+
+.weather-hour-card__temp {
+  font-weight: 700;
+  font-size: 16px;
+}
+
+.weather-hour-card__feels {
+  font-size: 11px;
+  opacity: 0.7;
+}
+
+@media (max-width: 768px) {
+  .weather-day-card__header {
+    flex-wrap: wrap;
+  }
+  
+  .weather-day-card__temps {
+    order: 1;
+  }
+  
+  .weather-day-card__avg {
+    order: 2;
+  }
+}

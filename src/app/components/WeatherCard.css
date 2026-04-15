@@ -1,0 +1,137 @@
+.weather-card {
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  padding: 20px;
+  text-align: center;
+  color: white;
+  min-width: 140px;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.weather-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+.weather-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.weather-card--clear {
+  background: linear-gradient(135deg, rgba(255, 200, 50, 0.3), rgba(255, 150, 50, 0.2));
+}
+
+.weather-card--clouds {
+  background: linear-gradient(135deg, rgba(150, 150, 150, 0.4), rgba(100, 100, 100, 0.3));
+}
+
+.weather-card--rain {
+  background: linear-gradient(135deg, rgba(50, 100, 150, 0.4), rgba(30, 60, 100, 0.3));
+}
+
+.weather-card--storm {
+  background: linear-gradient(135deg, rgba(50, 50, 80, 0.5), rgba(30, 30, 60, 0.4));
+}
+
+.weather-card--snow {
+  background: linear-gradient(135deg, rgba(200, 220, 255, 0.4), rgba(150, 180, 220, 0.3));
+}
+
+.weather-card--mist {
+  background: linear-gradient(135deg, rgba(180, 180, 180, 0.4), rgba(150, 150, 150, 0.3));
+}
+
+.weather-card__time {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-bottom: 8px;
+}
+
+.weather-card__day {
+  font-weight: 700;
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.weather-card__date {
+  font-size: 12px;
+  opacity: 0.8;
+}
+
+.weather-card__icon {
+  margin: 8px 0;
+}
+
+.weather-card__icon img {
+  width: 64px;
+  height: 64px;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+}
+
+.weather-card__temp {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.weather-card__temp-value {
+  font-size: 32px;
+  font-weight: 700;
+}
+
+.weather-card__temp-feels {
+  font-size: 12px;
+  opacity: 0.8;
+}
+
+.weather-card__condition {
+  margin-top: 8px;
+  font-size: 14px;
+  text-transform: capitalize;
+  opacity: 0.9;
+}
+
+.weather-card__details {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.weather-card__detail {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+}
+
+.weather-card__detail svg {
+  width: 14px;
+  height: 14px;
+  opacity: 0.8;
+}
+
+.weather-card__time-actual {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 11px;
+  opacity: 0.7;
+  background: rgba(0, 0, 0, 0.2);
+  padding: 2px 8px;
+  border-radius: 10px;
+}
